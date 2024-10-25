@@ -46,7 +46,16 @@ class User {
      * @return User
      */
     public function getUserByEmail($email){
-        return self::getUsers("email = '".$email.'"')->fetchObject(self::class);
+        return self::getUsers('email = "'.$email.'"', null, null,'email')->fetchObject(self::class);
+    }
+    /**
+     * Método retornar uma usuário com base no e-mail e id
+     * @param string $email
+     * @param integer $id
+     * @return User
+     */
+    public function getUserByEmailAndId($email, $id){
+        return self::getUsers('email = "'.$email.'" AND id= '.$id, null, null,'email')->fetchObject(self::class);
     }
     /**
      * Retorna usuários

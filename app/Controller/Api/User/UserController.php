@@ -5,6 +5,8 @@ namespace App\Controller\Api\User;
 use App\Http\Request;
 use App\Model\Entity\User;
 use Exception;
+use App\Http\RequestValidation\UserCreatedRequestValidation;
+use App\Http\RequestValidation\UserUpdateRequestValidation;
 use PDO;
 use WilliamCosta\DatabaseManager\Pagination;
 
@@ -71,13 +73,19 @@ class UserController {
      */
     public static function update(Request $request, $id)
     {
-        $user = new User;
-        $user = $user->getUserById( (int)$id);
-
+        
+        $validation = new UserUpdateRequestValidation();
         $postVars = $request->getPostVars();
+        $validation->validateAll([
+            'name' => $postVars['name'],
+            'id' => (int)$id,
+            'date_of_birth' => $postVars['date_of_birth'],
+        ]);
+        $validation->verifyErrors();
+        $user = (new User)->getUserById( (int)$id);
+       
         $user->name = $postVars['name'] ?? $user->name;
         $user->email = $postVars['email'] ?? $user->email;
-        $user->photo = $postVars['photo'] ?? $user->photo;
         $user->date_of_birth = $postVars['date_of_birth'] ?? $user->date_of_birth;
         $user->update();
         if($user != false){
@@ -100,12 +108,25 @@ class UserController {
     {
         $user = new User;
         $postVars = $request->getPostVars();
+         // validation 
+        $validation = new UserCreatedRequestValidation();
+        
+        $validation->validateAll([
+            'name' => $postVars['name'],
+            'email' => $postVars['email'],
+            'date_of_birth' => $postVars['date_of_birth'],
+        ]);
+       
+        $validation->verifyErrors();
+        
         $user->name = $postVars['name'];
         $user->email = $postVars['email'];
         // $user->photo = $postVars['photo'];
         $user->date_of_birth = $postVars['date_of_birth'];
         $user->create();
         if($user != false){
+            
+            
             return [
                 "message" => "Usuário Criado com sucesso!",
                 "user" => $user,
