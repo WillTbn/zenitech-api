@@ -1,10 +1,10 @@
 RewriteEngine On
 
-# Ignora requisições para arquivos reais na pasta /uploads
+
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^uploads/ - [L]
 
-# Todas as outras requisições serão tratadas pelo index.php
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]

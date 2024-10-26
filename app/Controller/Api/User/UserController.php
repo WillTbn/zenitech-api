@@ -27,7 +27,9 @@ class UserController {
 
         $obPagination = new Pagination($quantity, $pageNow, 5);
 
-        $results = User::getUsers(null, null, $obPagination->getLimit())->fetchAll(PDO::FETCH_ASSOC);
+        $results = User::getUsers(null, null, $obPagination->getLimit(),  
+            "id, name,email,created_at, updated_at,date_of_birth,CONCAT('http://localhost:8091/zenitech-api/public/', photo) AS photo"
+        )->fetchAll(PDO::FETCH_ASSOC);
         // echo "<pre>";
         // print_r($obPagination);
         // echo "</pre>";
