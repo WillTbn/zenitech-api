@@ -94,8 +94,7 @@ class Router {
             }
         }
         $params['middlewares'] = $params['middlewares'] ?? [];
-          
-
+      
         // variaveis da roda
         $params['variables'] = [];
 
@@ -111,6 +110,11 @@ class Router {
         $patternRoute = '/^'.str_replace('/', '\/', $route).'$/';
         // adionar a rot adentro da classe
         $this->routes[$patternRoute][$method] = $params;
+        // echo "<pre>";
+        // print_r($this->routes);
+        // echo "</pre>";
+        // exit;
+
     }
     /**
      * Define a rota GET
@@ -119,6 +123,7 @@ class Router {
      */
     public function get($route, $params = [])
     {
+       
         return $this->addRoute('GET', $route, $params);
     }
     /**

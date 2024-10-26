@@ -7,6 +7,7 @@ use App\Model\Entity\User;
 use Exception;
 use App\Http\RequestValidation\UserCreatedRequestValidation;
 use App\Http\RequestValidation\UserUpdateRequestValidation;
+use App\Http\UploadFile;
 use PDO;
 use WilliamCosta\DatabaseManager\Pagination;
 
@@ -110,25 +111,33 @@ class UserController {
     {
         $user = new User;
         $postVars = $request->getPostVars();
-         // validation 
+
+       
+        // validation 
         $validation = new UserCreatedRequestValidation();
-        
+       
         $validation->validateAll([
-            'name' => $postVars['name'],
-            'email' => $postVars['email'],
-            'date_of_birth' => $postVars['date_of_birth'],
+            'name' => $postVars['name'] ?? '',
+            'email' => $postVars['email']?? '', 
+            'photo' => $request->getFiles()['photo']?? '',
+            'date_of_birth' => $postVars['date_of_birth'] ?? '',
         ]);
        
         $validation->verifyErrors();
-        
+       
+        if($request->getFiles()){
+            $photo = $request->getFiles()['photo'];
+            $uplod = new UploadFile($photo);
+            $parts = explode("\\app\\",__DIR__, 2);
+            $uplod->uploadTo($parts[0]);
+        }
+
         $user->name = $postVars['name'];
         $user->email = $postVars['email'];
-        // $user->photo = $postVars['photo'];
+        $user->photo = $request->getFiles() ? $uplod->getNameDatabase() :"";
         $user->date_of_birth = $postVars['date_of_birth'];
         $user->create();
         if($user != false){
-            
-            
             return [
                 "message" => "Usuário Criado com sucesso!",
                 "user" => $user,

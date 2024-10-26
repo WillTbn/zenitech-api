@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\RequestValidation;
 
+use App\Http\UploadFile;
 use App\Model\Entity\User;
 use DateTime;
 
@@ -45,7 +46,24 @@ class UserCreatedRequestValidation
             $this->setErros(['email' => $email], "O e-mail já cadastrado!");
         }
     }
-
+    /**
+     * validação de photo
+     * @var array $photo
+     */
+    public function validatePhoto($photo)
+    {
+        if (!empty($photo)) {
+         
+            $uplod = new UploadFile($photo);
+            if($uplod->getExtension() != 'jpg'){
+                $this->setErros(['photo' => $photo], "Formato não permitido, aceitamos '.jpg'!");
+            }
+            
+            if($uplod->isSizeValid()){
+                $this->setErros(['photo' => $photo], "Excedeu o limite permitido, aceitamos até 200kb.");
+            }
+        }
+    }
     public function validateBirthdate($birthdate)
     {
         $dob = new DateTime($birthdate);
@@ -59,8 +77,10 @@ class UserCreatedRequestValidation
 
     public function validateAll($data)
     {
+        
         $this->validateName($data['name'] ?? '');
         $this->validateEmail($data['email'] ?? '');
+        $this->validatePhoto($data['photo'] ?? '');
         $this->validateBirthdate($data['date_of_birth'] ?? '');
     }
     public function verifyErrors()
