@@ -27,7 +27,13 @@ class User {
      */
     public $photo = 'default.png';
 
-
+    // /**
+    //  * Configurando foto
+    //  * @var string $path
+    //  */
+    // public function setPhoto($path){
+    //     $this->photo = $path;
+    // }
     /**
      * Método retornar uma usuário com base no ID
      * @param integer $id
@@ -68,7 +74,7 @@ class User {
     {
         return (new Database('users'))->select($where, $order, $limit, $fields);
     }
-
+    
     public function update(){
         // $this->date_of_birth = date('Y-m-d');
         // $this->id = new Database(users)
@@ -85,6 +91,7 @@ class User {
         $this->id = (new Database('users'))->insert([
             "name" => $this->name,
             "email" => $this->email,
+            'photo' => $this->photo,
             "date_of_birth" => $this->date_of_birth,
         ]);
 
