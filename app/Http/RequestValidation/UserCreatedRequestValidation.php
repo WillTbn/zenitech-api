@@ -12,10 +12,6 @@ class UserCreatedRequestValidation
      * @var array
      */
     private $erros = [];
-    public function __construct()
-    {
-        
-    }
     private function setErros($erro, $message = "Campo obrigatório")
     {
         $keys = array_keys($erro);
@@ -72,7 +68,6 @@ class UserCreatedRequestValidation
         if($uplod->isSizeValid()){
             $this->setErros(['photo.size' => $photo], "Excedeu o limite permitido, aceitamos até 200kb.");
         }
-        
     }
     public function validateBirthdate($birthdate)
     {

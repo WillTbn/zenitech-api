@@ -1,32 +1,12 @@
 <?php
 namespace App\Http\RequestValidation;
 
+use App\Http\UploadFile;
 use App\Model\Entity\User;
 use DateTime;
 
-class UserUpdateRequestValidation
+class UserUpdateRequestValidation extends RequestValidation
 {
-    /**
-     * Erros da request
-     * @var array
-     */
-    private $erros = [];
-    public function __construct()
-    {
-        
-    }
-    private function setErros($erro, $message = "Campo obrigatório")
-    {
-        $keys = array_keys($erro);
-        $key = $keys[0];
-
-        $this->erros[$key] = $message;
-    }
-
-    public function getErros()
-    {
-        return $this->erros;
-    }
 
     public function validateName($name)
     {
@@ -34,17 +14,33 @@ class UserUpdateRequestValidation
             $this->setErros(['name' => $name]);
         }
     }
-
-    // public function validateEmail($email)
-    // {
-    //     if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-    //         $this->setErros(['email' => $email], "O e-mail inválido");
-    //     }
-    //     $userEmail = (new User)->getUserByEmail($email);
-    //     if(! empty($userEmail)){
-    //         $this->setErros(['email' => $email], "O e-mail já cadastrado!");
-    //     }
-    // }
+    /**
+     * Verifica existencia do file
+     * @var array $photo
+     */
+    public function existsPhoto($photo){
+        return isset($photo['error']) && $photo['error'] === 0;        
+    }
+    /**
+     * validação de photo
+     * @var array $photo
+     */
+    public function validatePhoto($photo)
+    {
+        
+        if(!$this->existsPhoto($photo)){
+            return;
+        }
+        $uplod = new UploadFile($photo);
+       
+        if($uplod->getExtension() != 'jpg'){
+            $this->setErros(['photo.extension' => $photo], "Formato não permitido, aceitamos '.jpg'!");
+        }
+        
+        if($uplod->isSizeValid()){
+            $this->setErros(['photo.size' => $photo], "Excedeu o limite permitido, aceitamos até 200kb.");
+        }
+    }
 
     public function validateBirthdate($birthdate)
     {
@@ -72,15 +68,7 @@ class UserUpdateRequestValidation
         
         $this->validateName($data['name'] ?? '');
         $this->validateId($data['id'] ?? '');
-        // $this->validateEmail($data['email'] ?? '');
+        $this->validatePhoto($data['photo'] ?? '');
         $this->validateBirthdate($data['date_of_birth'] ?? '');
-    }
-    public function verifyErrors()
-    {
-        if(!empty($this->getErros())){
-            http_response_code(402);
-            echo json_encode($this->getErros());
-            exit;
-        }
     }
 }

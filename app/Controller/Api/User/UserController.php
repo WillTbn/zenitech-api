@@ -82,11 +82,18 @@ class UserController {
         $validation->validateAll([
             'name' => $postVars['name'],
             'id' => (int)$id,
+            'photo' => $request->getFiles()['photo']?? '',
             'date_of_birth' => $postVars['date_of_birth'],
         ]);
         $validation->verifyErrors();
         $user = (new User)->getUserById( (int)$id);
-       
+        if(isset($request->getFiles()['photo']) && !$validation->existsPhoto($request->getFiles())){
+            $photo = $request->getFiles()['photo'];
+            $uplod = new UploadFile($photo);
+            $parts = explode("\\app\\",__DIR__, 2);
+            $uplod->uploadTo($parts[0]);
+            $user->photo = $uplod->getNameDatabase();
+        }
         $user->name = $postVars['name'] ?? $user->name;
         $user->email = $postVars['email'] ?? $user->email;
         $user->date_of_birth = $postVars['date_of_birth'] ?? $user->date_of_birth;

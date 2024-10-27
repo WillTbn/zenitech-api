@@ -43,7 +43,7 @@ class User {
         $baseUrl = getenv("URL");
         // return self::getUsers('id = '.$id)->fetchObject(self::class);
         return self::getUsers('id = '.$id, null, null, 
-            "id, name,email,created_at, updated_at,date_of_birth,CONCAT('http://localhost:8091/zenitech-api/', photo) AS photo"
+            "id, name,email,created_at, updated_at,date_of_birth,CONCAT('http://localhost:8091/zenitech-api/public/', photo) AS photo"
         )->fetchObject(self::class);
     }
     /**
