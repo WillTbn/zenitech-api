@@ -20,15 +20,18 @@ class UserController {
      */
     public static function getAll(Request $request)
     {
-        
-        $quantity = User::getUsers(null, null, null, 'COUNT(*)  as qtd')->fetchObject()->qtd;
-
         $queryParams = $request->getQueryParams();
+        
+        $whereName = isset($queryParams['name']) ? 'name LIKE "'.$queryParams['name'].'%"': null;
+
+        $quantity = User::getUsers($whereName, null, null, 'COUNT(*)  as qtd')->fetchObject()->qtd;
+
         $pageNow = $queryParams['page'] ?? 1;
+        // $whereName = $queryParams['name'] ?? null;
 
         $obPagination = new Pagination($quantity, $pageNow, 5);
 
-        $results = User::getUsers(null, null, $obPagination->getLimit(),  
+        $results = User::getUsers($whereName, null, $obPagination->getLimit(),  
             "id, name,email,created_at, updated_at,date_of_birth,CONCAT('http://localhost:8091/zenitech-api/public/', photo) AS photo"
         )->fetchAll(PDO::FETCH_ASSOC);
         // echo "<pre>";

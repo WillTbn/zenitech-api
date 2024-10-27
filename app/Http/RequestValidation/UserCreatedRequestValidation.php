@@ -5,30 +5,19 @@ use App\Http\UploadFile;
 use App\Model\Entity\User;
 use DateTime;
 
-class UserCreatedRequestValidation
+class UserCreatedRequestValidation extends RequestValidation
 {
-    /**
-     * Erros da request
-     * @var array
-     */
-    private $erros = [];
-    private function setErros($erro, $message = "Campo obrigatório")
-    {
-        $keys = array_keys($erro);
-        $key = $keys[0];
-
-        $this->erros[$key] = $message;
-    }
-
-    public function getErros()
-    {
-        return $this->erros;
-    }
 
     public function validateName($name)
     {
         if (empty($name)) {
             $this->setErros(['name' => $name]);
+        }
+        if(strlen($name) > 3) {
+            $this->setErros(['name.size' =>$name],'Nome deve conter mais de 3 caracteres');
+        }
+        if(preg_match("/^[a-zA-ZÀ-ÿ\s]+$/", $name)){
+            $this->setErros(['name.char' =>$name], 'Nome invalido!');
         }
     }
 

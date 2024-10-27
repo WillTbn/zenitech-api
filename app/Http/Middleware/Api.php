@@ -15,11 +15,7 @@ class Api{
     public function handle(Request $request, $next)
     {
         /// altera content type 
-        $request->getRouter()->setContentType('application/json');
-        // if(getenv('MAINTENANCE') == 'true'){
-        //     throw new Exception("Página em manuntenção. Tente novamente mais tarde.", 200);
-        // }
-        
+        $request->getRouter()->setContentType('application/json');        
         return $next($request);
         // echo "<pre>";
         // print_r($request);
