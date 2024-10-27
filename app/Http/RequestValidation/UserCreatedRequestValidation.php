@@ -13,10 +13,10 @@ class UserCreatedRequestValidation extends RequestValidation
         if (empty($name)) {
             $this->setErros(['name' => $name]);
         }
-        if(strlen($name) > 3) {
+        if(strlen($name) < 3) {
             $this->setErros(['name.size' =>$name],'Nome deve conter mais de 3 caracteres');
         }
-        if(preg_match("/^[a-zA-ZÀ-ÿ\s]+$/", $name)){
+        if(!preg_match("/^[a-zA-ZÀ-ÿ\s]+$/", $name)){
             $this->setErros(['name.char' =>$name], 'Nome invalido!');
         }
     }
