@@ -47,22 +47,32 @@ class UserCreatedRequestValidation
         }
     }
     /**
+     * Verifica existencia do file
+     * @var array $photo
+     */
+    public function existsPhoto($photo){
+        return isset($photo['error']) && $photo['error'] === 0;        
+    }
+    /**
      * validação de photo
      * @var array $photo
      */
     public function validatePhoto($photo)
     {
-        if (!empty($photo)) {
-         
-            $uplod = new UploadFile($photo);
-            if($uplod->getExtension() != 'jpg'){
-                $this->setErros(['photo' => $photo], "Formato não permitido, aceitamos '.jpg'!");
-            }
-            
-            if($uplod->isSizeValid()){
-                $this->setErros(['photo' => $photo], "Excedeu o limite permitido, aceitamos até 200kb.");
-            }
+        
+        if(!$this->existsPhoto($photo)){
+            return;
         }
+        $uplod = new UploadFile($photo);
+       
+        if($uplod->getExtension() != 'jpg'){
+            $this->setErros(['photo.extension' => $photo], "Formato não permitido, aceitamos '.jpg'!");
+        }
+        
+        if($uplod->isSizeValid()){
+            $this->setErros(['photo.size' => $photo], "Excedeu o limite permitido, aceitamos até 200kb.");
+        }
+        
     }
     public function validateBirthdate($birthdate)
     {

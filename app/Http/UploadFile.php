@@ -143,7 +143,7 @@ class UploadFile
     {
         return $this->extension;
     }
-    public function setNameDatabade($full)
+    public function setNameDatabase($full)
     {
         $xName =  explode("public",$full, 2);
         $this->nameDatabase =  $xName[1];
@@ -176,7 +176,7 @@ class UploadFile
         if($this->error != 0) return false;
         $path = $destination.'/public/uploads/'.$this->getBaseName();
         
-        $this->setNameDatabade($path);
+        $this->setNameDatabase($path);
 
         move_uploaded_file($this->tmpName, $path);
       

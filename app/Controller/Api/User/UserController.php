@@ -124,17 +124,16 @@ class UserController {
         ]);
        
         $validation->verifyErrors();
-       
-        if($request->getFiles()){
+      
+        if(isset($request->getFiles()['photo']) && !$validation->existsPhoto($request->getFiles())){
             $photo = $request->getFiles()['photo'];
             $uplod = new UploadFile($photo);
             $parts = explode("\\app\\",__DIR__, 2);
             $uplod->uploadTo($parts[0]);
+            $user->photo = $uplod->getNameDatabase();
         }
-
         $user->name = $postVars['name'];
         $user->email = $postVars['email'];
-        $user->photo = $request->getFiles() ? $uplod->getNameDatabase() :"";
         $user->date_of_birth = $postVars['date_of_birth'];
         $user->create();
         if($user != false){

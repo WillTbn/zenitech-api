@@ -25,7 +25,7 @@ class User {
      /**
      * @var string
      */
-    public $photo = 'default.png';
+    public $photo = 'uploads/default.jpg';
 
     // /**
     //  * Configurando foto
